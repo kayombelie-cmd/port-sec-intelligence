@@ -283,22 +283,23 @@ if 'demo_launched' not in st.session_state:
 # ========== 6. EN-TÊTE ==========
 col1, col2 = st.columns([1, 5])
 with col1:
-    try:
-    st.image("assets/logo.png", width=80)
-except:
-    # Créer un logo simple avec Pillow
-    from PIL import Image, ImageDraw
-    import io
-    
-    img = Image.new('RGB', (80, 80), color='blue')
-    d = ImageDraw.Draw(img)
-    d.text((20, 35), "PSI", fill=(255, 255, 255))
-    
-    buf = io.BytesIO()
-    img.save(buf, format='PNG')
-    buf.seek(0)
-    
-    st.image(buf, width=80)
+   try:
+        st.image("assets/logo.png", width=80)
+   except:
+        # Créer un logo simple avec Pillow
+        from PIL import Image, ImageDraw
+        import io
+        
+        img = Image.new('RGB', (80, 80), color='blue')
+        d = ImageDraw.Draw(img)
+        d.text((20, 35), "PSI", fill=(255, 255, 255))
+        
+        buf = io.BytesIO()
+        img.save(buf, format='PNG')
+        buf.seek(0)
+        
+        st.image(buf, width=80)
+  
 with col2:
     st.markdown('<h1 class="main-title">PORT SEC INTELLIGENT PLATFORM</h1>', unsafe_allow_html=True)
     st.markdown("**Dashboard Opérationnel | Données Simulées 2026 | Kasumbalesa, RDC**")
