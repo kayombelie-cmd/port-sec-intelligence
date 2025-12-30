@@ -36,7 +36,7 @@ if not st.session_state.authenticated:
     st.markdown("""
     <div style='text-align: center; padding: 50px;'>
         <h1>🔐 PORT SECURITY INTELLIGENCE</h1>
-        <h3>Dashboard Sécurisé - Accès Restreint</h3>
+        <h3>Dashboard Sécurisé - Accès Restreint - par elie mbumb</h3>
     </div>
     """, unsafe_allow_html=True)
     
