@@ -311,11 +311,12 @@ with st.sidebar:
     st.markdown("### 🔧 **FILTRES**")
     
     show_errors = st.checkbox("Afficher les erreurs", value=True)
-    show_alerts = st.checkbox("Afficher les alertes", value=True)
-    auto_refresh = st.checkbox("Actualisation automatique", value=False)
-    
-    if st.button("🔄 Actualiser les données", use_container_width=True):
-        st.rerun()
+    show_alerts = st.checkbox("Afficher les alertes", value=True)  
+    auto_refresh = st.checkbox("🔄 Actualisation automatique", value=False)
+  
+    if auto_refresh:
+        refresh_rate = st.slider("Intervalle (secondes)", 5, 60, 30)
+        st.info(f"Prochain rafraîchissement dans {refresh_rate}s")
     
     st.markdown("---")
     st.markdown("#### 📊 **INFORMATIONS**")
@@ -327,7 +328,14 @@ with st.sidebar:
 # ========== 5. CHARGEMENT DES DONNÉES ==========
 with st.spinner("Chargement des données..."):
     daily_data, engins_data, hourly_data, recent_ops = load_data(start_date, end_date)
+# ========== AUTO-REFRESH ==========
+if 'auto_refresh_counter' not in st.session_state:
+    st.session_state.auto_refresh_counter = 0
 
+if auto_refresh:
+    st.session_state.auto_refresh_counter += 1
+    time.sleep(refresh_rate)
+    st.rerun()
 # Initialisation de session pour la démo
 if 'demo_launched' not in st.session_state:
     st.session_state.demo_launched = False
@@ -663,7 +671,3 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-# ========== 14. AUTO-REFRESH ==========
-if auto_refresh:
-    time.sleep(refresh_rate)
-    st.rerun()
