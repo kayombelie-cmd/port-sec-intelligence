@@ -1,16 +1,3 @@
-import streamlit as st
-import pandas as pd
-import plotly.express as px
-import plotly.graph_objects as go
-from datetime import datetime, timedelta
-import sqlite3
-import json
-import time
-import numpy as np
-import folium
-from streamlit_folium import folium_static
-import random
-from pathlib import Path
 import logging
 import sys
 
@@ -27,6 +14,20 @@ logger = logging.getLogger(__name__)
 
 # Loguer le démarrage
 logger.info("Application démarrée")
+import streamlit as st
+import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
+from datetime import datetime, timedelta
+import sqlite3
+import json
+import time
+import numpy as np
+import folium
+from streamlit_folium import folium_static
+import random
+from pathlib import Path
+
 # ========== AUTHENTIFICATION ==========
 def check_password():
     """Vérifie le mot de passe via Streamlit Secrets."""
