@@ -11,6 +11,51 @@ import folium
 from streamlit_folium import folium_static
 import random
 from pathlib import Path
+import logging
+import sys
+
+# Configurer les logs
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger(__name__)
+
+# Loguer le démarrage
+logger.info("Application démarrée")
+# ========== AUTHENTIFICATION ==========
+def check_password():
+    """Vérifie le mot de passe via Streamlit Secrets."""
+    if "password_correct" not in st.session_state:
+        st.session_state["password_correct"] = False
+def validate_input(input_text, max_length=100):
+    """Valide les entrées utilisateur."""
+    if not input_text:
+        return False
+    if len(input_text) > max_length:
+        return False
+# Ajoutez d'autres validations si nécessaire
+    return True
+    def password_entered():
+        if st.session_state["password"] == st.secrets["APP_PASSWORD"]:
+            st.session_state["password_correct"] = True
+            del st.session_state["password"]
+        else:
+            st.session_state["password_correct"] = False
+    
+    if not st.session_state["password_correct"]:
+        st.text_input("Mot de passe", type="password", on_change=password_entered, key="password")
+        st.error("😕 Mot de passe incorrect" if st.session_state.get("password_correct") is False else "")
+        return False
+    return True
+
+# Si l'utilisateur n'est pas authentifié, on arrête l'app
+if not check_password():
+    st.stop()
 
 # ========== 1. CONFIGURATION DE LA PAGE ==========
 st.set_page_config(
@@ -279,6 +324,16 @@ with st.spinner("Chargement des données..."):
 # Initialisation de session pour la démo
 if 'demo_launched' not in st.session_state:
     st.session_state.demo_launched = False
+
+# ========== GESTION DES RÔLES ==========
+USER_ROLES = {
+    "admin": ["read", "write", "delete"],
+    "user": ["read"]  # Par défaut
+}
+
+# Définir le rôle utilisateur (ici, tous sont "user" par défaut)
+user_role = "user"
+
 
 # ========== 6. EN-TÊTE ==========
 col1, col2 = st.columns([1, 5])
