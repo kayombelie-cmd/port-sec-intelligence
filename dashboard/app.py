@@ -1,19 +1,5 @@
 import logging
 import sys
-
-# Configurer les logs
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-    handlers=[
-        logging.FileHandler('app.log'),
-        logging.StreamHandler(sys.stdout)
-    ]
-)
-logger = logging.getLogger(__name__)
-
-# Loguer le démarrage
-logger.info("Application démarrée")
 import streamlit as st
 import pandas as pd
 import plotly.express as px
@@ -28,43 +14,63 @@ from streamlit_folium import folium_static
 import random
 from pathlib import Path
 
-# ========== AUTHENTIFICATION ==========
-def check_password():
-    """Vérifie le mot de passe via Streamlit Secrets."""
-    if "password_correct" not in st.session_state:
-        st.session_state["password_correct"] = False
-def validate_input(input_text, max_length=100):
-    """Valide les entrées utilisateur."""
-    if not input_text:
-        return False
-    if len(input_text) > max_length:
-        return False
-# Ajoutez d'autres validations si nécessaire
-    return True
-    def password_entered():
-        if st.session_state["password"] == st.secrets["APP_PASSWORD"]:
-            st.session_state["password_correct"] = True
-            del st.session_state["password"]
-        else:
-            st.session_state["password_correct"] = False
+# ========== CONFIGURATION DES LOGS ==========
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('app.log'),
+        logging.StreamHandler(sys.stdout)
+    ]
+)
+logger = logging.getLogger(__name__)
+logger.info("Application démarrée")
+
+# ========== AUTHENTIFICATION OBLIGATOIRE ==========
+if "authenticated" not in st.session_state:
+    st.session_state.authenticated = False
+
+if not st.session_state.authenticated:
+    st.set_page_config(page_title="Authentification", layout="centered")
     
-    if not st.session_state["password_correct"]:
-        st.text_input("Mot de passe", type="password", on_change=password_entered, key="password")
-        st.error("😕 Mot de passe incorrect" if st.session_state.get("password_correct") is False else "")
-        return False
-    return True
+    st.markdown("""
+    <div style='text-align: center; padding: 50px;'>
+        <h1>🔐 PORT SECURITY INTELLIGENCE</h1>
+        <h3>Dashboard Sécurisé - Accès Restreint</h3>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        password = st.text_input("Mot de passe d'accès  :", type="password", key="auth_pwd")
+        
+        # CHANGEZ CE MOT DE PASSE (exemple: "PortSec2024!")
+        CORRECT_PASSWORD = "FROMelie17"
+        
+        if st.button("🔓 Se connecter", type="primary", use_container_width=True):
+            if password == CORRECT_PASSWORD:
+                st.session_state.authenticated = True
+                st.rerun()
+            else:
+                st.error("❌ Mot de passe incorrect")
+    
+    st.markdown("---")
+    st.warning("⚠️ Accès réservé au personnel autorisé")
+    st.stop()  # Arrête complètement l'app si non authentifié
 
-# Si l'utilisateur n'est pas authentifié, on arrête l'app
-if not check_password():
-    st.stop()
+# ========== SI AUTHENTIFIÉ, ON CONTINUE ==========
+logger.info("Utilisateur authentifié")
 
-# ========== 1. CONFIGURATION DE LA PAGE ==========
+# ========== CONFIGURATION DE LA PAGE ==========
 st.set_page_config(
     page_title="Port Sec Intelligent Platform",
     page_icon="🚛",
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
+# ========== RESTE DE VOTRE CODE ORIGINAL ==========
+# (Tout le code après cette ligne reste exactement comme vous l'aviez)
 
 # ========== 2. STYLE CSS ==========
 st.markdown("""
@@ -334,7 +340,6 @@ USER_ROLES = {
 
 # Définir le rôle utilisateur (ici, tous sont "user" par défaut)
 user_role = "user"
-
 
 # ========== 6. EN-TÊTE ==========
 col1, col2 = st.columns([1, 5])
@@ -646,7 +651,8 @@ recommendations = [
 
 for i, rec in enumerate(recommendations, 1):
     st.markdown(f"{i}. {rec}")
-    # ========== 14. FOOTER ==========
+
+# ========== 13. FOOTER ==========
 st.markdown("---")
 st.markdown(f"""
 <div style="text-align: center; color: #6B7280; padding: 20px; font-size: 0.9rem;">
@@ -657,8 +663,7 @@ st.markdown(f"""
 </div>
 """, unsafe_allow_html=True)
 
-
-# ========== 15. AUTO-REFRESH ==========
+# ========== 14. AUTO-REFRESH ==========
 if auto_refresh:
     time.sleep(refresh_rate)
     st.rerun()
