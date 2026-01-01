@@ -147,31 +147,30 @@ def create_sample_data(start_date, end_date):
     # Dates pour la période
     dates = pd.date_range(start_date, end_date, freq='D')
     
-    # Données journalières simulées
-    base_ops = 120
+    # Données journalières simulées (128 à 500 camions/jour)
     daily_data = pd.DataFrame({
-        'date': dates,
-        'nb_operations': [base_ops + random.randint(-20, 30) for _ in dates],
-        'duree_moyenne': [45 + random.uniform(-5, 5) for _ in dates],
-        'urgences': [random.randint(0, 5) for _ in dates],
-        'erreurs': [random.randint(0, 3) for _ in dates]
-    })
+    'date': dates,
+    'nb_operations': [random.randint(128, 500) for _ in dates],  
+    'duree_moyenne': [40 + random.uniform(-8, 12) for _ in dates],  # 32-52 min
+    'urgences': [random.randint(2, 15) for _ in dates],  # Plus d'urgences avec volume élevé
+    'erreurs': [random.randint(2, 10) for _ in dates]  # Plus d'erreurs avec plus de camions
+})
     
     # Performance des engins
     engins = ['TRACTEUR_01', 'TRACTEUR_02', 'TRACTEUR_03', 'CHARIOT_01', 'CHARIOT_02', 'GRUE_01']
     engins_data = pd.DataFrame({
-        'engin': engins,
-        'total_operations': [random.randint(80, 200) for _ in engins],
-        'erreurs': [random.randint(0, 8) for _ in engins],
-        'duree_moyenne': [random.uniform(40, 55) for _ in engins]
-    })
+    'engin': engins,
+    'total_operations': [random.randint(200, 1000) for _ in engins],  # Augmenté
+    'erreurs': [random.randint(5, 20) for _ in engins],  # Augmenté
+    'duree_moyenne': [random.uniform(35, 60) for _ in engins]
+})
     
-    # Données horaires
+   # Données horaires
     hours = list(range(6, 22))
     hourly_data = pd.DataFrame({
-        'heure': hours,
-        'nb_operations': [random.randint(5, 25) for _ in hours]
-    })
+    'heure': hours,
+    'nb_operations': [random.randint(10, 50) for _ in hours]  # 10-50 opérations/heure
+})
     
     # Dernières opérations
     recent_ops = pd.DataFrame({
