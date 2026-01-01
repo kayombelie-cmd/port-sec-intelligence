@@ -286,7 +286,7 @@ with st.sidebar:
     
     selected_period = st.selectbox(
         "Sélectionnez la période",
-        ["30 derniers jours", "7 derniers jours", "3 derniers mois", "Personnalisée"]
+        ["7 derniers jours", "30 derniers jours", "3 derniers mois", "Personnalisée"]
     )
     
     if selected_period == "Personnalisée":
